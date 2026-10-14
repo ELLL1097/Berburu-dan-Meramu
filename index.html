@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pertahanan Diri Suku Melayu</title>
+    <style>
+        /* Matikan scrollbar pada window luar iframe */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            /* Mencegah scrollbar ganda dari body */
+            background-color: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Kartu utama yang memegang scrollbar tunggal */
+        .gallery-container {
+            max-width: 400px;
+            height: 100vh;
+            /* Mengisi penuh tinggi iframe Lapentor */
+            box-sizing: border-box;
+            margin: 0 auto;
+            text-align: center;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            /* Memunculkan HANYA SATU scrollbar internal jika teks panjang */
+        }
+
+        .slide-title {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .image-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            max-width: 356px;
+            border-radius: 8px;
+            object-fit: cover;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .btn-nav {
+            position: absolute;
+            background-color: rgba(211, 84, 0, 0.85);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+            z-index: 10;
+        }
+
+        .btn-nav:hover {
+            background-color: rgba(160, 64, 0, 1);
+        }
+
+        .prev {
+            left: 5px;
+        }
+
+        .next {
+            right: 5px;
+        }
+
+        .slide-desc {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 15px;
+            line-height: 1.5;
+            text-align: justify;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="gallery-container">
+        <!-- Judul akan berubah otomatis -->
+        <div class="slide-title" id="judul-hewan">Memuat...</div>
+
+        <div class="image-wrapper">
+            <!-- Tombol Before / Prev -->
+            <button class="btn-nav prev" id="btn-prev" onclick="gantiSlide(-1)">&#10094;</button>
+
+            <!-- Gambar utama -->
+            <img id="gambar-hewan" src="" alt="Koleksi Museum">
+
+            <!-- Tombol Next -->
+            <button class="btn-nav next" id="btn-next" onclick="gantiSlide(1)">&#10095;</button>
+        </div>
+
+        <!-- Keterangan akan berubah otomatis -->
+        <div class="slide-desc" id="keterangan-hewan">Memuat keterangan...</div>
+    </div>
+
+    <script>
+        // 1. Tempat lu masukin Judul, Link Gambar, dan Keterangan
+        // Cukup edit teks di dalam tanda kutip ini aja ya
+        const koleksiData = [
+            {
+                judul: "Jala",
+                gambar: "jala.jpg",
+                keterangan: "Terbuat dari benang katun yang dianyam, bagian atas kecil dan membesar bagian bawah. Bagian bawah diberi pemberat dari rangkaian bulatan besi/rantai. Digunakan untuk menangkap ikan."
+            },
+            {
+                judul: "Bubu",
+                gambar: "Bubu.jpg",
+                keterangan: "Terbuat dari batang-batang bambu yang dibelah kecil-kecil disusun mengembang berbentuk bulat kerucut dan disatukan dengan jalinan tali rotan. Pada bagian dalam diperkuat dengan rotan bulat yang diikat dengan tali rotan berbentuk lingkaran sebanyak tiga buah. Bagian dalam juga terdapat susunan bambu-bambu berbentuk kerucut yang berfungsi sebagai perangkap. Digunakan untuk menangkap ikan. Ukuran : P = 52 cm Dm = 21 cm"
+            },
+            {
+                judul: "Engge",
+                gambar: "Engge.jpg",
+                keterangan: "Terbuat dari kulit kayu pohon sagu, bentuk silinder, pinggir atas diperkuat dengan belahan rotan. Pada badan diperkuat dengan empat batang rotan vertikal agak jarang bermotif geometris, bagian bawah diberi alas dari kayu. Pada kedua sisinya diberi tali gendongan dari kulit kayu. Digunakan untuk tempat membawa hasil panen dari ladang. Ukuran : T = 59,5 cm Dm = 24 cm"
+            },
+            {
+                judul: "Jaring Rusa dan Tugal Bunyi",
+                gambar: "Jaring_rusa_dan_tugas_bunyi.jpg",
+                keterangan: `Jaring rusa terbuat dari rotan yang dijalin berbentuk tali memanjang yang digantungi tali rotan bentuk bulatan-bulatan besar sebagai penjerat. Ukuran : P = 4 m
+
+                            Sedangkan tugal bunyi erbuat dari kayu keras, bentuk bulat panjang. Pada bagian atas berbentuk pipih dan bagian ujung bermotif pinggir awan dan tumpal. Pada bagian tengah sepertiga dari atas berkerawang segi empat panjang yang didalamnya terdapat sepotong kayu dengan kedua ujungnya agak lancip yang dapat menghasilkan bunyi ketika digunakan, dan pada bagian bawahnya bulat panjang berujung lancip. Digunakan untuk melubangi tanah sebagai media tanam bibit. Ukuran : P = 293 cm`
+            },
+            {
+                judul: "Tabung Damak",
+                gambar: "Tabung_damak.jpg",
+                keterangan: "Terbuat dari bambu (aur), yang diberi tutup dan terdapat cantelan yang diikatkan pada bagian tengah tabung. Kegunaannya untuk menyimpan damak (mata sumpit) sewaktu, berburu. Ujung mata sumpit kadangkala diberi racun yang mematikan korban. Ukuran : P = 42 cm Dm = 9 cm"
+            },
+            {
+                judul: "Ani-ani, Sipik dan Cantung",
+                gambar: "ani_ani_dan_sipik_dan_cantung.jpg",
+                keterangan: `Ani-ani terbuat dari kayu diukir berbentuk perahu, bagian kepala motif naga dan ekor motif kepala burung enggang, bagian tengah diberi sepotong bambu kecil, pada bagian sisi bawah diberi mata pisau. Mata pisau dari besi bentuk persegi panjang pipih. Digunakan untuk memotong/memanen padi di ladang. Alat ini dipakai sebagai lambang dimulainya panen pada masyarakat Dayak. Ukuran : P = 25 cm
+
+                            Sipik terbuat dari anyaman daun seke bentuk persegi empat tipis, terbuka bagian atas. Digunakan untuk tempat umpan ikan. Ukuran : P = 32 cm L = 29 cm
+                            
+                            Cantung terbuat dari anyaman rotan bulat yang dicat warna hitam dan coklat, bentuk selinder. Keseluruhan tutup dilapisi dengan kulit hewan yang sudah dikeringkan. Pada bibir tutup dan bibir badan diperkuat dengan rotan yang diikat dengan tali rotan. Bagian dalam cantung dilapisi dengan kulit pohon sagu, sedangkan alas dasar bersudut empat dengan kaki dari belahan rotan. Sebagai penguat badan cantung diberi empat buah rotan yang dipasang vertikal dan diikat dengan tali rotan. Digunakan sebagai tempat menyimpan benih padi yang ditempatkan di lumbung selama menunggu datangnya musim tanam. Ukuran : T = 25,5 cm Dm = 16 cm`
+            },
+            {
+                judul: "Kapak Beliung",
+                gambar: "kapak_beliung.jpg",
+                keterangan: "Mata beliung terbuat dari besi, dibuat dengan tempaan kasar, berbentuk segi tiga panjang pipih, salah satu sisinya tajam. Gagang terbuat dari kayu berbentuk bulat panjang, dipangkalnya diikat dengan anyaman rotan. Digunakan untuk memotong pohan dalam membuka ladang pertanian. Ukuran : P. Beliung = 72 cm P. Mata beliung = 23,5 cm"
+            },
+            {
+                judul: "Tanggoi",
+                gambar: "Tanggoi.jpg",
+                keterangan: "Terbuat dari rotan, bentuk kerucut, bagian atas dihiasi motif pilin, kait dan geometris membentuk segi tiga warna merah. Digunakan untuk tutup kepala sewaktu pergi berburu maupun meramu. Ukuran : Dm = 47 cm"
+            },
+            {
+                judul: "Lesung dan Alu",
+                gambar: "lesung_dan_alu.jpg",
+                keterangan: `Lesung terbuat dari kayu bentuk seperti sampan, terdapat dua buah lubang penumbukan. Ukuran : P = 208 cm L = 37 cm
+                
+                            Alu terbuat dari kayu, bentuk bulat panjang, bagian tengah atas dipahat berlubang didalamnya tersisa kayu seperti bentuk lubangnya, apabila ditumbukkan akan menimbulkan bunyi. Bagian tengah terdapat pegangan, kedua ujungnya rata. Lesung dan Alu ini digunakan untuk menumbuk hasil panen pertanian, seperti padi dan kopi oleh suku Dayak Bukat Kapuas Hulu. Ukuran : P = 198 cm`
+            }
+        ];
+
+        let indexSekarang = 0;
+
+        // Ambil elemen HTML yang akan dimanipulasi
+        const elemenJudul = document.getElementById('judul-hewan');
+        const elemenGambar = document.getElementById('gambar-hewan');
+        const elemenKeterangan = document.getElementById('keterangan-hewan');
+        const btnPrev = document.getElementById('btn-prev');
+        const btnNext = document.getElementById('btn-next');
+
+        function updateTampilan() {
+            // Ganti konten sesuai data array
+            elemenJudul.innerText = koleksiData[indexSekarang].judul;
+            elemenGambar.src = koleksiData[indexSekarang].gambar;
+            elemenKeterangan.innerText = koleksiData[indexSekarang].keterangan;
+
+            // Logika sesuai revisi dosen:
+            // Sembunyikan tombol Prev jika sedang di gambar urutan pertama (index 0)
+            if (indexSekarang === 0) {
+                btnPrev.style.display = 'none';
+            } else {
+                btnPrev.style.display = 'flex';
+            }
+
+            // Sembunyikan tombol Next jika sedang di gambar urutan terakhir
+            if (indexSekarang === koleksiData.length - 1) {
+                btnNext.style.display = 'none';
+            } else {
+                btnNext.style.display = 'flex';
+            }
+        }
+
+        function gantiSlide(arah) {
+            indexSekarang += arah;
+            updateTampilan();
+        }
+
+        // Jalankan fungsi saat web pertama kali dirender
+        updateTampilan();
+    </script>
+
+</body>
+
+</html>
